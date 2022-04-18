@@ -78,7 +78,7 @@ class Graph{
                         edge_prev = edge;
                         edge = edge->next;
                     }
-                    if (edge->info == toVertex){
+                    if (edge && edge->info == toVertex){
                         if (edge_prev == NULL)
                             temp->next = edge->next;
                         else
@@ -114,7 +114,7 @@ class Graph{
                 prev = temp;
                 temp = temp->down;
             }
-            if (temp->info == vertexName){
+            if (temp && temp->info == vertexName){
                 vertex --;
                 if (prev == NULL)
                     adj_list = temp->down;
@@ -186,7 +186,7 @@ class Graph{
 
             while (temp && temp->info != vertexName)
                 temp = temp->down;
-            if (temp->info == vertexName){
+            if (temp && temp->info == vertexName){
                 cout << "Naighbour of " << vertexName << " : " << endl;
                 edge = temp->next;
                 while (edge){
@@ -304,6 +304,7 @@ int main(){
     g.showGraph();
 
     g.naighbour(v4);
+    g.naighbour("v7");
 
     cout << endl;
     bool res = g.is_adjacent(v1, v3);
