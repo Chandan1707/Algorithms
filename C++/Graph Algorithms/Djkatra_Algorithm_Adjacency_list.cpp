@@ -1,6 +1,22 @@
+
 #include<iostream>
 #include<string>
 using namespace std;
+#define INF 999999;
+
+template <class Name>
+class Visited_and_Distance{
+    public:
+        Name info;
+        bool viseted;
+        int distance;
+
+        // Visited_and_Distance(Name name, int distance = INF){
+        //     info = name;
+        //     viseted = false;
+        //     this->distance = distance;
+        // }
+};
 
 template  <class name>
 class Edge{
@@ -179,31 +195,135 @@ class Graph{
                 }
             }
         }
+
+        int find_min_value(Visited_and_Distance <Name>vistied_and_distance[]){
+
+            int index = -1;
+            int val = INF;
+            for (int i = 0; i < vertex; i++){
+                if (vistied_and_distance[i].viseted == false && vistied_and_distance[i].distance < val){
+                    index = i;
+                    val = vistied_and_distance[i].distance;
+                }
+            }
+
+            return index;
+        }
+        
+        void updated_visited_distance(Visited_and_Distance <Name>vistied_and_distance[], Name name, int distance){
+            for (int i = 0; i < vertex; i ++){
+                if (vistied_and_distance[i].info == name){
+                    vistied_and_distance[i].distance = distance;
+                    
+                }
+                    
+            } 
+        }
+        int get_distance(Visited_and_Distance <Name>vistied_and_distance[], Name name){
+            int distance = 0;
+            for (int i = 0; i < vertex; i ++){
+                if (vistied_and_distance[i].info == name)
+                    distance = vistied_and_distance[i].distance;
+            }   
+            return distance;
+        }
+
+        void djkstra(Name start_point){
+            
+            Visited_and_Distance <Name>*visited_and_distance = new Visited_and_Distance<Name>[vertex];
+            Vertex <Name>*temp = adj_list;
+            Edge <Name>*edge = NULL;
+            int i = 0;
+            while (temp){
+                visited_and_distance[i].viseted = false;
+                visited_and_distance[i].info = temp->info;
+                visited_and_distance[i].distance = INF;
+                temp = temp->down;
+                i ++;
+            }
+            // visited_and_distance[start_point].visted = true;
+            updated_visited_distance(visited_and_distance, start_point, 0);
+            
+            
+            for (i = vertex; i > 0; i --){
+                int min = find_min_value(visited_and_distance);
+                visited_and_distance[min].viseted = true;
+                temp = adj_list;
+                while (temp && temp->info != visited_and_distance[min].info){
+                    temp = temp->down;
+                }
+                if (temp->info == visited_and_distance[min].info){
+                    
+                    edge = temp->next;
+                    while (edge){
+                        int distance = visited_and_distance[min].distance;
+                        if (distance + edge->weight < get_distance(visited_and_distance, edge->info)){
+                            distance = distance + edge->weight;
+                            updated_visited_distance(visited_and_distance, edge->info, distance);
+                        }
+                        edge = edge->next;
+                    }
+                }
+
+            }
+            cout << "Shortest distance from "<< start_point << "(Djkstra) :"<< endl ;
+            for (i = vertex-1; i >= 0; i--){
+                cout << "\t< " << visited_and_distance[i].info << " , " << visited_and_distance[i].distance << " >" << endl;
+            }
+            cout << endl;
+        }
 };
 
 int main(){
+    string v1 = "v1";
+    string v2 = "v2";
+    string v3 = "v3";
+    string v4 = "v4";
+    string v5 = "v5";
+    string v6 = "v6";
+    
 
     Graph <string>g;
-    g.addVertex("kolkata");
-    g.addVertex("Delhi");
-    g.addVertex("Mumbai");
-    g.addVertex("Channai");
+    g.addVertex(v1);
+    g.addVertex(v2);
+    g.addVertex(v3);
+    g.addVertex(v4);
+    g.addVertex(v5);
+    g.addVertex(v6);
     
-    g.add_edge("Delhi","kolkata",12);
-    g.add_edge("Delhi","Mumbai",13);
-    g.add_edge("kolkata","Mumbai",17);
+    g.add_edge(v1, v2, 10);
+    g.add_edge(v1, v6, 2);
+    g.add_edge(v2, v6, 5);
+    g.add_edge(v2, v3, 2);
+    g.add_edge(v3, v6, 8);
+    g.add_edge(v5, v6, 15);
+    g.add_edge(v3, v5, 4);
+    g.add_edge(v3, v4, 12);
+    g.add_edge(v4, v5, 3);
     
     g.showGraph();
 
-    g.naighbour("Delhi");
-    bool res = g.is_adjacent("Delhi", "kolkata");
-    cout << res << endl;
-    res = g.is_adjacent("Delhi", "Channai");
-    cout << res << endl;
+    g.naighbour(v4);
+
+    cout << endl;
+    bool res = g.is_adjacent(v1, v3);
+    if (res)
+        cout << "Edge < " << v1 << "," << v3 << " >" << " -- True" << endl;
+    else
+        cout << "Edge < " << v1 << "," << v3 << " >" << " -- false" << endl;
+    
+    res = g.is_adjacent(v1, v6);
+    if (res)
+        cout << "Edge < " << v1 << "," << v6 << " >" << " -- True" << endl;
+    else
+        cout << "Edge < " << v1 << "," << v6 << " >" << " -- false" << endl;
+    cout << endl;
 
     // g.remove_vertex("kolkata");
     // g.remove_edge("Delhi", "Mumbai");
 
     // g.showGraph();
+
+    g.djkstra(v1);
     return 0;
 }
