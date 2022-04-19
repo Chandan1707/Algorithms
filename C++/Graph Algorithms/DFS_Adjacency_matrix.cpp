@@ -1,8 +1,7 @@
-#include<malloc.h>
 #include <iostream>
-#include <vector>
-#include<queue>
+
 using namespace std;
+
 template <class d_type>
 class Node{
     public:
@@ -14,53 +13,45 @@ class Node{
         next = NULL;
     }
 };
+
 template <class d_type>
-class Queue{
+class Stack{
     private:
-        Node <d_type>*front;
-        Node <d_type>*rear;
+        Node <d_type>*head;
     public:
-        Queue(){
-            front = NULL;
-            rear = NULL;
+        Stack(){
+            head = NULL;
         }
-        void enqueue(d_type info){
+        void push(d_type info){
             Node <d_type>*temp = new Node<d_type>(info);
-            if (front == NULL && rear == NULL){
-                front = rear = temp;
-            }
-            else{
-                rear->next = temp;
-                rear = rear->next;
-            }
+            temp->next = head;
+            head = temp;
         }
-        d_type dequeue(){
+
+        d_type pop(){
             Node <d_type>*temp;
-            if (front == NULL)
-                exit(0);
-            if(front == rear){
-                temp = front;
-                front = rear = NULL;
+            d_type val;
+            if (temp){
+                temp = head;
+                head = head->next;
+                val = temp->info;
+                delete temp;
             }
-            else{
-                temp = front;
-                front = front->next;
-            }
-            d_type temp_info = temp->info;
-            delete temp;
-            return temp_info;
+            else
+                exit;
+            return val;
         }
+
         bool isEmpty(){
-            bool result = false;
-            if (front == NULL && rear == NULL){
-                result = true;
-            }
-            return result;
+            bool res = false;
+            if (head == NULL)
+                res = true;
+            return res;
         }
 };
 
 class Graph{
-    public:
+    private:
         int vertex;
         int edges;
         int **Adj_matrix;
@@ -82,18 +73,10 @@ class Graph{
         }
         void deleteEdge(int fromVertex, int toVertex){
             if (Adj_matrix[fromVertex][toVertex]==1){
-                vertex --;
                 Adj_matrix[fromVertex][toVertex] = Adj_matrix[toVertex][fromVertex] = 0;
             }
         }
-        void addVertex(){
-            vertex ++;
-            int **Adj_matrix = (int **)realloc(Adj_matrix, vertex);
-            for (int i = 0; i < vertex; i ++){
-                Adj_matrix[i][vertex] = 1;
-                Adj_matrix[vertex][i] = 1;
-            }
-        }
+      
         void addEdge(int fromVertex, int toVertex){
             if (Adj_matrix[fromVertex][toVertex] == 0 && Adj_matrix[toVertex][fromVertex] == 0){
                 Adj_matrix[fromVertex][toVertex] = 1;
@@ -122,21 +105,23 @@ class Graph{
                 cout << endl;
             }
         }
-        void BFS(int start){
-            Queue<int>q;
+        void DFS(int start){
+            Stack <int>stack;
             int v;
-            bool visited[vertex];
-            for (int i = 0;i < vertex; i++)
+            int size = vertex;
+            bool visited[size];
+            for (int i = 0; i < size; i++){
                 visited[i] = false;
-            q.enqueue(start);
+            }
+            stack.push(start);
             visited[start] = true;
-            cout << "visit :" <<endl;
-            while (!q.isEmpty()){
-                v = q.dequeue();
-                cout <<  v << " ";
-                for (int i = 0; i < vertex; i ++){
+            cout << "DFS traversal is :\n\t";
+            while (!stack.isEmpty()){
+                v = stack.pop();
+                cout << v << ", ";
+                for (int i = 0; i < size; i++){
                     if (Adj_matrix[v][i] == 1 && visited[i] == false){
-                        q.enqueue(i);
+                        stack.push(i);
                         visited[i] = true;
                     }
                 }
@@ -149,6 +134,7 @@ class Graph{
             delete[] Adj_matrix;
         }
 };
+
 
 int main(){
     int vertex;
@@ -177,8 +163,6 @@ int main(){
     // }
     g1.naighbours(2);
     g1.showGraph();
-    g1.BFS(0);
+    g1.DFS(0);
     return 0;
 }
-
-
