@@ -1,5 +1,5 @@
 #include <iostream>
-#define INF 99999;
+#define INF 99999
 using namespace std;
 
 class Graph{
