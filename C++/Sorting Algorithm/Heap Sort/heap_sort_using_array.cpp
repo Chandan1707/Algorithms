@@ -45,7 +45,7 @@ int main(){
     cin >> n;
     arr = (int *)malloc(n * sizeof(int));
     for(int i = 0; i < n; i ++){
-        cout << "Enter Element :";
+        cout << "Enter an Integer Element :";
         cin >> arr[i];
     }
     cout << endl << "Before Sort :" << endl;
