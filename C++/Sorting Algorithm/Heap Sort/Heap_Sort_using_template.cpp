@@ -46,7 +46,9 @@ void show(Type arr[], int n){
 }
 
 int main(){
-    Node <float, float>arr[5];
+    // Node <float, float>arr[5];
+    int n = 5;
+    Node <float, float>*arr = new Node<float, float>[n];
     arr[0].info = 90.2;
     arr[0].others = 9.5;
 
@@ -62,7 +64,7 @@ int main(){
     arr[4].info = 80.7;
     arr[4].others = 8.5;
 
-    Heap_Sort<Node<float,float>>(arr, 5);
-    show<Node<float,float>>(arr, 5);
+    Heap_Sort<Node<float,float>>(arr, n);
+    show<Node<float,float>>(arr, n);
     return 0;
 }
